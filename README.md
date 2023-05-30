@@ -49,13 +49,13 @@ $ yarn run start:prod
 
 ```bash
 # unit tests
-$ yarn run test
+$ yarn run templates
 
 # e2e tests
-$ yarn run test:e2e
+$ yarn run templates:e2e
 
-# test coverage
-$ yarn run test:cov
+# templates coverage
+$ yarn run templates:cov
 ```
 
 ## Support

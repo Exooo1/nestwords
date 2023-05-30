@@ -25,7 +25,7 @@ export class SignUpDTO {
 }
 
 export class EmailDTO extends PickType(SignUpDTO, ["email"]) {
-  @MinLength(10)
+  @MinLength(2)
   @IsString()
   @IsNotEmpty()
   readonly name: string;

@@ -75,13 +75,19 @@ export class AuthService implements IAuthService {
   }
 
   async sendEmail(data: EmailDTO): Promise<TStatusRes<null>> {
-    const here = await this.mailerService.sendMail({
-      from: `YourVocabularyApp`,
-      to: data.email,
-      subject: 'Authorization in YourVocabulary',
-      text:'Hello everybody!'
-    });
-    console.log(here)
-    return resStatus(null, 1, "", "Message was sent");
+    try {
+      await this.mailerService.sendMail({
+        from: `YourVocabularyApp`,
+        to: data.email,
+        subject: "Authorization in YourVocabulary",
+        template: "email",
+        context: {
+          name: "Vlas Olegovich!"
+        }
+      });
+      return resStatus(null, 1, "", "Message was sent");
+    } catch (err) {
+
+    }
   }
 }
