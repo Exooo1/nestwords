@@ -5,6 +5,8 @@
 yarn.lock
 .idea
 
+.env
+
 # Logs
 logs
 *.log
