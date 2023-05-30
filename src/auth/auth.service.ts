@@ -57,13 +57,17 @@ export class AuthService implements IAuthService {
     try {
       const { email, password, firstName, lastName } = data;
       const account = await this.authModel.find({ email }).exec();
-      if (account) return resStatus<null>(null, 0, "Email already exists", "You have account!");
+      console.log(account)
+      if (account.length) return resStatus<null>(null, 0, "Email already exists", "You have account!");
       const hashedPassword = await bcrypt.hash(password, 11);
       const newAccount = await this.authModel.create({
         email, password: hashedPassword, profile: { ...this.profile, firstName, lastName },
         created: new Date().toLocaleString()
       }) as IAccount;
-      return resStatus(this.jwtService.sign({ id: newAccount._id }), 1, "", "Account was created.");
+      // return resStatus(this.jwtService.sign({ id: newAccount._id }), 1, "", "Account was created.");
+      const mail = await this.sendEmail({ verify: newAccount._id, name: firstName, email });
+      if (mail.resultCode) return resStatus<null>(null, 1, "", "Account was created.");
+      else throw new Error(mail.error);
     } catch (err) {
       const error = err as Error;
       return resStatus<null>(null, 0, error.message, "The server is unavailable");
@@ -76,18 +80,21 @@ export class AuthService implements IAuthService {
 
   async sendEmail(data: EmailDTO): Promise<TStatusRes<null>> {
     try {
+      const { name, email, verify } = data;
       await this.mailerService.sendMail({
         from: `YourVocabularyApp`,
-        to: data.email,
+        to: email,
         subject: "Authorization in YourVocabulary",
         template: "email",
         context: {
-          name: "Vlas Olegovich!"
+          username: name,
+          verify: verify
         }
       });
-      return resStatus(null, 1, "", "Message was sent");
+      return resStatus<null>(null, 1, "", "Message was sent");
     } catch (err) {
-
+      const error = err as Error;
+      return resStatus<null>(null, 0, error.message);
     }
   }
 }
