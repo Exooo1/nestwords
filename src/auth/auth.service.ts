@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
@@ -53,11 +53,11 @@ export class AuthService implements IAuthService {
   ) {
   }
 
-  async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
+  // @ts-ignore
+  async signUp(data: SignUpDTO):Promise<TStatusRes<string>>  {
     try {
       const { email, password, firstName, lastName } = data;
       const account = await this.authModel.find({ email }).exec();
-      console.log(account)
       if (account.length) return resStatus<null>(null, 0, "Email already exists", "You have account!");
       const hashedPassword = await bcrypt.hash(password, 11);
       const newAccount = await this.authModel.create({
@@ -70,7 +70,7 @@ export class AuthService implements IAuthService {
       else throw new Error(mail.error);
     } catch (err) {
       const error = err as Error;
-      return resStatus<null>(null, 0, error.message, "The server is unavailable");
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
