@@ -53,12 +53,11 @@ export class AuthService implements IAuthService {
   ) {
   }
 
-  // @ts-ignore
-  async signUp(data: SignUpDTO):Promise<TStatusRes<string>>  {
+  async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
     try {
       const { email, password, firstName, lastName } = data;
       const account = await this.authModel.find({ email }).exec();
-      if (account.length) return resStatus<null>(null, 0, "Email already exists", "You have account!");
+      if (account.length) throw new HttpException("Email already exists", HttpStatus.CONFLICT);
       const hashedPassword = await bcrypt.hash(password, 11);
       const newAccount = await this.authModel.create({
         email, password: hashedPassword, profile: { ...this.profile, firstName, lastName },
@@ -67,10 +66,12 @@ export class AuthService implements IAuthService {
       // return resStatus(this.jwtService.sign({ id: newAccount._id }), 1, "", "Account was created.");
       const mail = await this.sendEmail({ verify: newAccount._id, name: firstName, email });
       if (mail.resultCode) return resStatus<null>(null, 1, "", "Account was created.");
-      else throw new Error(mail.error);
+      else throw new HttpException(mail.error, HttpStatus.FORBIDDEN);
     } catch (err) {
-      const error = err as Error;
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      const error = err as HttpException
+      const status = error.getStatus()
+      if(status) throw new HttpException(error.message, status);
+      else throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -94,7 +95,7 @@ export class AuthService implements IAuthService {
       return resStatus<null>(null, 1, "", "Message was sent");
     } catch (err) {
       const error = err as Error;
-      return resStatus<null>(null, 0, error.message);
+      throw new HttpException(error.message, HttpStatus.PRECONDITION_FAILED);
     }
   }
 }
