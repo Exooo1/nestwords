@@ -49,7 +49,7 @@ export class AuthService implements IAuthService {
   constructor(
     @InjectModel(Account.name) private readonly authModel: Model<TAccountDocument>,
     private readonly jwtService: JwtService,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
   ) {
   }
 
