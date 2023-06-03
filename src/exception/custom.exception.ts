@@ -10,7 +10,8 @@ type TResponse = {
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger()
+  private readonly logger = new Logger();
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -19,13 +20,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const responseError = exception.getResponse() as TResponse;
 
 
-    this.logger.log(`method:${request.method} - path:${request.path} - time:${new Date().toLocaleString()}`)
+    this.logger.log(`method:${request.method} - path:${request.path} - time:${new Date().toLocaleString()}`);
 
     if (typeof responseError === "object") {
-      response.status(responseError.statusCode).json(resStatus(null, 0, responseError.message.join(', ')));
-      this.logger.error(responseError.message.join(', '))
+      response.status(responseError.statusCode).json(resStatus(null, 0, responseError.message.join(", ")));
+      this.logger.error(responseError.message.join(", "));
     } else {
-      this.logger.error(responseError)
+      this.logger.error(responseError);
       response
         .status(status)
         .json({
