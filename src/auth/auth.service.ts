@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
@@ -45,6 +45,7 @@ export class AuthService implements IAuthService {
       z: []
     }
   };
+  private readonly logger = new Logger()
 
   constructor(
     @InjectModel(Account.name) private readonly authModel: Model<TAccountDocument>,
@@ -55,6 +56,7 @@ export class AuthService implements IAuthService {
 
   async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
     try {
+      this.logger.warn(`${AuthService.name} time:${new Date().toLocaleString()}`)
       const { email, password, firstName, lastName } = data;
       const account = await this.authModel.find({ email }).exec();
       if (account.length) throw new HttpException("Email already exists", HttpStatus.CONFLICT);

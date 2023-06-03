@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from "@nestjs/common";
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, Logger } from "@nestjs/common";
 import { Request, Response } from "express";
 import { resStatus } from "../utils/status";
 
@@ -10,6 +10,7 @@ type TResponse = {
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger()
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -18,15 +19,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const responseError = exception.getResponse() as TResponse;
 
 
-    if (responseError?.message.length) {
+    this.logger.log(`method:${request.method} - path:${request.path} - time:${new Date().toLocaleString()}`)
+
+    if (typeof responseError === "object") {
       response.status(responseError.statusCode).json(resStatus(null, 0, responseError.message.join(', ')));
+      this.logger.error(responseError.message.join(', '))
     } else {
+      this.logger.error(responseError)
       response
         .status(status)
         .json({
           item: null,
           resultCode: 0,
-          error: exception.getResponse(),
+          error: responseError,
           timestamp: new Date().toISOString()
         });
     }
