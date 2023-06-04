@@ -9,6 +9,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { join, resolve } from "path";
+import { TasksModule } from "../cron/tasks.module";
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { join, resolve } from "path";
         };
       }
     }),
-    MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }])
+    MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),
+    TasksModule
   ],
   providers: [AuthService, ConfigService],
   controllers: [AuthController]

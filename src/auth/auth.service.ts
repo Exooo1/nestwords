@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
-import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
-import * as bcrypt from "bcryptjs";
 import { JwtService } from "@nestjs/jwt";
 import { CAccountProfile, IAccount } from "../schemas/auth/types";
 import { resStatus, TStatusRes } from "../utils/status";
 import { EmailDTO, SignUpDTO } from "./auth.dto";
-import { IAuthService } from "./types";
 import { MailerService } from "@nestjs-modules/mailer";
+import { Model } from "mongoose";
+import { IAuthService } from "./types";
+import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -45,18 +45,17 @@ export class AuthService implements IAuthService {
       z: []
     }
   };
-  private readonly logger = new Logger()
+  private readonly logger = new Logger(AuthService.name)
 
   constructor(
     @InjectModel(Account.name) private readonly authModel: Model<TAccountDocument>,
     private readonly jwtService: JwtService,
-    private readonly mailerService: MailerService,
+    private readonly mailerService: MailerService
   ) {
   }
 
   async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
     try {
-      this.logger.warn(`${AuthService.name} time:${new Date().toLocaleString()}`)
       const { email, password, firstName, lastName } = data;
       const account = await this.authModel.find({ email }).exec();
       if (account.length) throw new HttpException("Email already exists", HttpStatus.CONFLICT);
@@ -67,11 +66,14 @@ export class AuthService implements IAuthService {
       }) as IAccount;
       // return resStatus(this.jwtService.sign({ id: newAccount._id }), 1, "", "Account was created.");
       const mail = await this.sendEmail({ verify: newAccount._id, name: firstName, email });
-      if (mail.resultCode) return resStatus<null>(null, 1, "", "Account was created.");
+      if (mail.resultCode) {
+        this.logger.log(`Account was created - ${email}`)
+        return resStatus<null>(null, 1, "", "Account was created.");
+      }
       else throw new HttpException(mail.error, HttpStatus.FORBIDDEN);
     } catch (err) {
       const error = err as HttpException
-      const status = error.getStatus()
+      const status = error?.getStatus()
       if(status) throw new HttpException(error.message, status);
       else throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

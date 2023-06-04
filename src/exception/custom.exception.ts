@@ -19,8 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const responseError = exception.getResponse() as TResponse;
 
-
-    this.logger.log(`method:${request.method} - path:${request.path} - time:${new Date().toLocaleString()}`);
+    this.logger.error(`method:${request.method} - path:${request.path} - time:${new Date().toLocaleString()}`);
 
     if (typeof responseError === "object") {
       response.status(responseError.statusCode).json(resStatus(null, 0, responseError.message.join(", ")));
