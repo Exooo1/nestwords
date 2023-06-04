@@ -1,5 +1,5 @@
-import { IsEmail, IsNotEmpty, MinLength, IsString } from "class-validator";
-import { PickType } from "@nestjs/mapped-types";
+import { IsEmail, IsNotEmpty, MinLength, IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
 
 export class SignUpDTO {
   @MinLength(10)
@@ -24,7 +24,7 @@ export class SignUpDTO {
   readonly lastName?: string;
 }
 
-export class EmailDTO extends PickType(SignUpDTO, ["email"]) {
+export class EmailDTO extends PickType(SignUpDTO, ['email']) {
   @MinLength(2)
   @IsString()
   @IsNotEmpty()

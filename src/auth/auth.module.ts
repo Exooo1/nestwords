@@ -1,59 +1,58 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ConfigService } from "@nestjs/config";
-import { Account, AccountSchema } from "../schemas/auth/account.schema";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { PassportModule } from "@nestjs/passport";
-import { JwtModule } from "@nestjs/jwt";
-import { MailerModule } from "@nestjs-modules/mailer";
-import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
-import { join, resolve } from "path";
-import { TasksModule } from "../cron/tasks.module";
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+import { Account, AccountSchema } from '../schemas/auth/account.schema';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join, resolve } from 'path';
+import { TasksModule } from '../cron/tasks.module';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: "jwt" }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return {
-          secret: config.get<string>("JWT_SECRET"),
+          secret: config.get<string>('JWT_SECRET'),
           signOptions: {
-            expiresIn: config.get<string | number>("JWT_EXPIRE")
-          }
+            expiresIn: config.get<string | number>('JWT_EXPIRE'),
+          },
         };
-      }
+      },
     }),
     MailerModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => {
         return {
           transport: {
-            host: "smtp.gmail.com",
+            host: 'smtp.gmail.com',
             auth: {
-              user: config.get<string>("LOGIN"),
-              pass: config.get<string>("PASSWORD")
-            }
+              user: config.get<string>('LOGIN'),
+              pass: config.get<string>('PASSWORD'),
+            },
           },
           defaults: {
-            from: "vlasmaskalenchik1998@gmail.com"
+            from: 'vlasmaskalenchik1998@gmail.com',
           },
           template: {
-            dir: join(resolve(__dirname, ".."), "./templates"),
+            dir: join(resolve(__dirname, '..'), './templates'),
             adapter: new HandlebarsAdapter(),
             options: {
-              strict: true
-            }
-          }
+              strict: true,
+            },
+          },
         };
-      }
+      },
     }),
     MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),
-    TasksModule
+    TasksModule,
   ],
   providers: [AuthService, ConfigService],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
-export class AuthModule {
-}
+export class AuthModule {}

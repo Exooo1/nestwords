@@ -1,8 +1,8 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
-import { CAccountProfile } from "./types";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { CAccountProfile } from './types';
 
-export type TAccountDocument = Account & Document
+export type TAccountDocument = Account & Document;
 
 @Schema({ timestamps: true })
 export class Account {
@@ -22,7 +22,7 @@ export class Account {
   password: string;
 
   @Prop({ trim: true, type: CAccountProfile })
-  profile: CAccountProfile
+  profile: CAccountProfile;
 }
 
-export const AccountSchema = SchemaFactory.createForClass(Account)
+export const AccountSchema = SchemaFactory.createForClass(Account);
