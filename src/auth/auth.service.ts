@@ -4,7 +4,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { JwtService } from "@nestjs/jwt";
 import { CAccountProfile, IAccount } from "../schemas/auth/types";
 import { resStatus, TStatusRes } from "../utils/status";
-import { EmailDTO, SignUpDTO } from "./auth.dto";
+import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Model } from "mongoose";
 import { IAuthService } from "./types";
@@ -58,8 +58,8 @@ export class AuthService implements IAuthService {
   async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
     try {
       const { email, password, firstName, lastName } = data;
-      const account = await this.authModel.find({ email }).exec();
-      if (account.length)
+      const account = await this.authModel.findOne({ email }).exec();
+      if (account)
         throw new HttpException("Email already exists", HttpStatus.CONFLICT);
       const hashedPassword = await bcrypt.hash(password, 11);
       const newAccount = (await this.authModel.create({
@@ -90,9 +90,27 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async login(): Promise<TStatusRes<any>> {
-    const users = await this.authModel.find({},{'profile.firstName':1}).sort({ "profile.firstName":-1}).limit(1).exec();
-    return resStatus(users, 1);
+  async login(data: LoginDTO): Promise<TStatusRes<string>> {
+    // const users = await this.authModel.find({}, { "profile.firstName": 1 }).sort({ "profile.firstName": -1 }).limit(1).exec();
+    try {
+      const { email, password } = data;
+      const account = await this.authModel.findOne({ email }).exec() as IAccount;
+      if (!account) throw new HttpException("You aren't authorized!", HttpStatus.UNAUTHORIZED);
+      const validPassword = await bcrypt.compare(password, account.password);
+      if (!validPassword) throw  new HttpException("Email or password is incorrect", HttpStatus.FORBIDDEN);
+      if (!account.verify) throw new HttpException("Please confirm your email", HttpStatus.CONFLICT);
+      await this.authModel.updateOne({ email }, { auth: 1 });
+      return resStatus(this.jwtService.sign({ id: account._id }), 1);
+    } catch (err) {
+      const error = err as HttpException;
+      const status = error?.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
   }
 
   async sendEmail(data: EmailDTO): Promise<TStatusRes<null>> {

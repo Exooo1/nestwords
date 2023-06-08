@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { EmailDTO, SignUpDTO } from './auth.dto';
+import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { TStatusRes } from '../utils/status';
 import { IAuthController } from './types';
 
@@ -19,7 +19,7 @@ export class AuthController implements IAuthController {
   }
 
   @Post('login')
-  login(){
-    return this.authService.login()
+  login(@Body() data:LoginDTO):Promise<TStatusRes<string>>{
+    return this.authService.login(data)
   }
 }
