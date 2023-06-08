@@ -14,4 +14,8 @@ export class CustomLogger extends ConsoleLogger {
   warn(message: string, stack?: string, context?: string) {
     super.warn(message);
   }
+
+  debug(message: string,stack?: string, context?: string) {
+    super.debug(message)
+  }
 }

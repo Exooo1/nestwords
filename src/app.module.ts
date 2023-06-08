@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
+import { LoggerMiddleware } from "./logger/logger.middleware";
+
+const arrayRouter = ['auth']
 
 @Module({
   imports: [
@@ -21,4 +24,10 @@ import { ScheduleModule } from '@nestjs/schedule';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes(...arrayRouter);
+  }
+}
