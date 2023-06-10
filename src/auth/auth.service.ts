@@ -68,7 +68,6 @@ export class AuthService implements IAuthService {
         profile: { ...this.profile, firstName, lastName },
         created: new Date().toLocaleString()
       })) as IAccount;
-      // return resStatus(this.jwtService.sign({ id: newAccount._id }), 1, "", "Account was created.");
       const mail = await this.sendEmail({
         verify: newAccount._id,
         name: firstName,
@@ -91,7 +90,6 @@ export class AuthService implements IAuthService {
   }
 
   async login(data: LoginDTO): Promise<TStatusRes<string>> {
-    // const users = await this.authModel.find({}, { "profile.firstName": 1 }).sort({ "profile.firstName": -1 }).limit(1).exec();
     try {
       const { email, password } = data;
       const account = await this.authModel.findOne({ email }).exec() as IAccount;
