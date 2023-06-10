@@ -5,9 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { LoggerMiddleware } from "./logger/logger.middleware";
-
-const arrayRouter = ['auth']
+import { LoggerMiddleware } from "./middleware/logger.middleware";
+import { AuthMiddleware } from "./middleware/auth.middleware";
 
 @Module({
   imports: [
@@ -28,6 +27,7 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes(...arrayRouter);
+      .forRoutes('auth');
+    consumer.apply(AuthMiddleware).exclude('auth/login').forRoutes('auth')
   }
 }
