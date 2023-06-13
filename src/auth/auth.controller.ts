@@ -26,14 +26,19 @@ export class AuthController implements IAuthController {
   }
 
   @Post("confirm")
-  confirm(@Body("id") id): Promise<TStatusRes<string>> {
+  confirm(@Body("id") id: string): Promise<TStatusRes<string>> {
     return this.authService.confirm(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get("cats")
-  cats(@Req() req) {
-    console.log(req.user);
-    return "Cats!";
+  @Get("me")
+  me(@Req() req) {
+    return this.authService.me(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("logout")
+  logOut(@Req() req) {
+    return this.authService.logOut(req.user.id);
   }
 }

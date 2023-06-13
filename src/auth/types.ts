@@ -11,5 +11,7 @@ export interface IAuthService {
   signUp: (data: SignUpDTO) => Promise<TStatusRes<string>>;
   sendEmail: (data: EmailDTO) => Promise<TStatusRes<null>>;
   login: (data: LoginDTO) => Promise<TStatusRes<string>>;
-  confirm: (data:string) => Promise<TStatusRes<string>>;
+  confirm: (data: string) => Promise<TStatusRes<string>>;
+  me: (data: string) => Promise<TStatusRes<number>>;
+  logOut: (data: string) => Promise<TStatusRes<number>>;
 }

@@ -149,4 +149,37 @@ export class AuthService implements IAuthService {
         );
     }
   }
+
+  async me(id: string): Promise<TStatusRes<number>> {
+    try {
+      const account = await this.authModel.findOne({ _id: id });
+      if (!account) throw new HttpException("NotFound", HttpStatus.NOT_FOUND);
+      return resStatus<number>(account.auth, 1);
+    } catch (err) {
+      const error = err as HttpException;
+      const status = error?.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async logOut(id: string): Promise<TStatusRes<number>> {
+    try {
+      await this.authModel.updateOne({ _id: id }, { auth: 0 });
+      return resStatus<number>(0, 0);
+    } catch (err) {
+      const error = err as HttpException;
+      const status = error?.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
 }
