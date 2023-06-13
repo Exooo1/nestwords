@@ -1,5 +1,5 @@
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
-import { TStatusRes } from '../utils/status';
+import { TStatusRes } from "../utils/status";
 import { CAccountProfile } from "../schemas/auth/types";
 
 export interface IAuthController {
@@ -10,5 +10,6 @@ export interface IAuthService {
   profile: CAccountProfile;
   signUp: (data: SignUpDTO) => Promise<TStatusRes<string>>;
   sendEmail: (data: EmailDTO) => Promise<TStatusRes<null>>;
-  login: (data:LoginDTO) => Promise<TStatusRes<string>>;
+  login: (data: LoginDTO) => Promise<TStatusRes<string>>;
+  confirm: (data:string) => Promise<TStatusRes<string>>;
 }

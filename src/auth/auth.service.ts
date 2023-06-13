@@ -130,4 +130,23 @@ export class AuthService implements IAuthService {
       throw new HttpException(error.message, HttpStatus.PRECONDITION_FAILED);
     }
   }
+
+  async confirm(id: string): Promise<TStatusRes<string>> {
+    try {
+      const account = await this.authModel.findOne({ _id: id });
+      if (!account) throw new HttpException("NotFound", HttpStatus.NOT_FOUND);
+      if (account.verify) throw new HttpException("Account already verified", HttpStatus.BAD_REQUEST);
+      await this.authModel.updateOne({ _id: id }, { verify: 1 });
+      return resStatus<string>("Email confirmed successfully", 1);
+    } catch (err) {
+      const error = err as HttpException;
+      const status = error?.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
 }
