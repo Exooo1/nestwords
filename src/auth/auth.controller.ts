@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { TStatusRes } from '../utils/status';
 import { IAuthController } from './types';
+import { JwtAuthGuard } from "./guards/auth.guard";
 
 @Controller('auth')
 export class AuthController implements IAuthController {
@@ -21,5 +22,12 @@ export class AuthController implements IAuthController {
   @Post('login')
   login(@Body() data:LoginDTO):Promise<TStatusRes<string>>{
     return this.authService.login(data)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('cats')
+  cats(@Req() req){
+    console.log(req.user)
+    return 'Cats!'
   }
 }

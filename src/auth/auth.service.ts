@@ -55,6 +55,15 @@ export class AuthService implements IAuthService {
   ) {
   }
 
+  async validateUser(data) {
+    const user = await this.authModel.findOne({ email: data.username }) as IAccount;
+    if (user && await bcrypt.compare(data.password, user.password)) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null
+  }
+
   async signUp(data: SignUpDTO): Promise<TStatusRes<string>> {
     try {
       const { email, password, firstName, lastName } = data;

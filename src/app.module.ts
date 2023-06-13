@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerMiddleware } from "./middleware/logger.middleware";
-import { AuthMiddleware } from "./middleware/auth.middleware";
 
 @Module({
   imports: [
@@ -28,6 +27,5 @@ export class AppModule {
     consumer
       .apply(LoggerMiddleware)
       .forRoutes('auth');
-    consumer.apply(AuthMiddleware).exclude('auth/login').forRoutes('auth')
   }
 }

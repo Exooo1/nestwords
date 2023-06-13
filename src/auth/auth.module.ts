@@ -10,6 +10,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join, resolve } from 'path';
 import { TasksModule } from '../cron/tasks.module';
+import { JwtStrategy } from "./strategies/jwt-strategy";
 
 @Module({
   imports: [
@@ -52,7 +53,7 @@ import { TasksModule } from '../cron/tasks.module';
     MongooseModule.forFeature([{ name: Account.name, schema: AccountSchema }]),
     TasksModule,
   ],
-  providers: [AuthService, ConfigService],
+  providers: [AuthService, ConfigService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
