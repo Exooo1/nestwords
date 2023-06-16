@@ -115,13 +115,12 @@ export class AuthService implements IAuthService {
     try {
       const { name, email, verify } = data;
       await this.mailerService.sendMail({
-        from: `YourVocabularyApp`,
         to: email,
-        subject: "Authorization in YourVocabulary",
+        subject: "Accept registration",
         template: "email",
         context: {
           username: name,
-          verify: verify
+          verify
         }
       });
       return resStatus<null>(null, 1, "", "Message was sent");
