@@ -69,7 +69,7 @@ export class AuthService implements IAuthService {
         created: new Date().toLocaleString()
       })) as IAccount;
       const mail = await this.sendEmail({
-        verify: newAccount._id,
+        verify: newAccount._id.toString(),
         name: firstName,
         email
       });

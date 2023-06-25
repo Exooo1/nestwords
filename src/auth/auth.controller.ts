@@ -15,11 +15,6 @@ export class AuthController implements IAuthController {
     return this.authService.signUp(data);
   }
 
-  @Post("email")
-  sendEmail(@Body() data: EmailDTO): Promise<TStatusRes<null>> {
-    return this.authService.sendEmail(data);
-  }
-
   @Post("login")
   login(@Body() data: LoginDTO): Promise<TStatusRes<string>> {
     return this.authService.login(data);
