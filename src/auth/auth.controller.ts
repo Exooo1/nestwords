@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
+import { LoginDTO, SignUpDTO } from "./auth.dto";
 import { TStatusRes } from "../utils/status";
 import { IAuthController } from "./types";
 import { JwtAuthGuard } from "./guards/auth.guard";

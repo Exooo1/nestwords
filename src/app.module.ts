@@ -6,9 +6,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerMiddleware } from "./middleware/logger.middleware";
+import { TestModule } from "./auth/test.module";
 
 @Module({
   imports: [
+    TestModule,
     AuthModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
