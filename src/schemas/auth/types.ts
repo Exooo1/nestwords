@@ -5,11 +5,11 @@ export type TAccountWord = {
   added: string;
 };
 
-export class CAccountProfile {
-  readonly firstName: string;
-  readonly lastName: string;
-  public totalWords: number;
-  words: {
+export interface IAccountProfile {
+   readonly firstName: string;
+   readonly lastName: string;
+   totalWords: number;
+   words: {
     a: TAccountWord[];
     b: TAccountWord[];
     c: TAccountWord[];
@@ -46,5 +46,6 @@ export interface IAccount {
   auth: number;
   email: string;
   password: string;
-  profile: CAccountProfile;
+  profile: IAccountProfile;
+  save: () => void;
 }

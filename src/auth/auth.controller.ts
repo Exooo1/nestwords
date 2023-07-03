@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDTO, SignUpDTO } from "./auth.dto";
 import { TStatusRes } from "../utils/status";
-import { IAuthController } from "./types";
+import { IAuthController, TLoginRes } from "./types";
 import { JwtAuthGuard } from "./guards/auth.guard";
 
 @Controller("auth")
@@ -16,7 +16,7 @@ export class AuthController implements IAuthController {
   }
 
   @Post("login")
-  login(@Body() data: LoginDTO): Promise<TStatusRes<string>> {
+  login(@Body() data: LoginDTO): Promise<TStatusRes<TLoginRes>> {
     return this.authService.login(data);
   }
 
@@ -32,7 +32,7 @@ export class AuthController implements IAuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post("logout")
+  @Put("logout")
   logOut(@Req() req) {
     return this.authService.logOut(req.user.id);
   }

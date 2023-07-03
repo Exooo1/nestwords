@@ -31,7 +31,7 @@ import { join, resolve } from "path";
       useFactory: async (config: ConfigService) => {
         return {
           transport: {
-            service:'gmail',
+            service: "gmail",
             port: 465,
             secure: true,
             auth: {
@@ -56,7 +56,8 @@ import { join, resolve } from "path";
     TasksModule
   ],
   providers: [AuthService, ConfigService, JwtStrategy],
-  controllers: [AuthController]
+  controllers: [AuthController],
+  exports: [MongooseModule]
 })
 export class AuthModule {
 }

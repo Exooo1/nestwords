@@ -2,17 +2,17 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { JwtService } from "@nestjs/jwt";
-import { CAccountProfile, IAccount } from "../schemas/auth/types";
+import { IAccountProfile, IAccount } from "../schemas/auth/types";
 import { resStatus, TStatusRes } from "../utils/status";
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Model } from "mongoose";
-import { IAuthService } from "./types";
+import { IAuthService, TLoginRes } from "./types";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class AuthService implements IAuthService {
-  readonly profile: CAccountProfile = {
+  readonly profile: IAccountProfile = {
     firstName: "",
     lastName: "",
     totalWords: 0,
@@ -89,16 +89,16 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async login(data: LoginDTO): Promise<TStatusRes<string>> {
+  async login(data: LoginDTO): Promise<TStatusRes<TLoginRes>> {
     try {
       const { email, password } = data;
-      const account = await this.authModel.findOne({ email }).exec() as IAccount;
+      const account = await this.authModel.findOne({ email }) as IAccount;
       if (!account) throw new HttpException("You aren't authorized!", HttpStatus.UNAUTHORIZED);
       const validPassword = await bcrypt.compare(password, account.password);
       if (!validPassword) throw  new HttpException("Email or password is incorrect", HttpStatus.FORBIDDEN);
       if (!account.verify) throw new HttpException("Please confirm your email", HttpStatus.CONFLICT);
       await this.authModel.updateOne({ email }, { auth: 1 });
-      return resStatus(this.jwtService.sign({ id: account._id }), 1);
+      return resStatus<TLoginRes>({ token: this.jwtService.sign({ id: account._id }), auth: 1 }, 1);
     } catch (err) {
       const error = err as HttpException;
       const status = error?.getStatus();
