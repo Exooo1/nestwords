@@ -79,7 +79,8 @@ export class AuthService implements IAuthService {
       } else throw new HttpException(mail.error, HttpStatus.FORBIDDEN);
     } catch (err) {
       const error = err as HttpException;
-      const status = error?.getStatus();
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
       if (status) throw new HttpException(error.message, status);
       else
         throw new HttpException(
@@ -101,7 +102,8 @@ export class AuthService implements IAuthService {
       return resStatus<TLoginRes>({ token: this.jwtService.sign({ id: account._id }), auth: 1 }, 1);
     } catch (err) {
       const error = err as HttpException;
-      const status = error?.getStatus();
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
       if (status) throw new HttpException(error.message, status);
       else
         throw new HttpException(
@@ -139,7 +141,8 @@ export class AuthService implements IAuthService {
       return resStatus<string>("Email confirmed successfully", 1);
     } catch (err) {
       const error = err as HttpException;
-      const status = error?.getStatus();
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
       if (status) throw new HttpException(error.message, status);
       else
         throw new HttpException(
@@ -156,7 +159,8 @@ export class AuthService implements IAuthService {
       return resStatus<number>(account.auth, 1);
     } catch (err) {
       const error = err as HttpException;
-      const status = error?.getStatus();
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
       if (status) throw new HttpException(error.message, status);
       else
         throw new HttpException(
@@ -172,7 +176,8 @@ export class AuthService implements IAuthService {
       return resStatus<number>(0, 0);
     } catch (err) {
       const error = err as HttpException;
-      const status = error?.getStatus();
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
       if (status) throw new HttpException(error.message, status);
       else
         throw new HttpException(
