@@ -56,7 +56,29 @@ export class WordsService implements IWordsService {
       });
       words.profile.totalWords += 1;
       await words.save();
-      return resStatus<TAccountWord>(word, 1,'',`You added word @${word.word} ${new Date().toTimeString().split(' ')[0]}`);
+      return resStatus<TAccountWord>(word, 1, "", `You added word @${word.word} ${new Date().toTimeString().split(" ")[0]}`);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async deleteWord(data): Promise<TStatusRes<string>> {
+    try {
+      const { user, letter, id } = data;
+      const account = await this.authModel.findOne({ _id: user }) as IAccount;
+      if (!account) throw new HttpException("The user was not found", HttpStatus.NOT_FOUND);
+      account.profile.words[letter].pull({ _id: id });
+      account.profile.totalWords -= 1;
+      await account.save();
+      return resStatus("You removed word", 1, "Removed");
     } catch (err) {
       const error = err as HttpException;
       let status: number;

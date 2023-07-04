@@ -1,10 +1,12 @@
 import { Prop, raw, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, SchemaTypes } from "mongoose";
+
 
 export type TAccountDocument = Account & Document;
 
 @Schema()
 class Word {
+
   @Prop( { type: String, trim: true })
   word: string;
 
