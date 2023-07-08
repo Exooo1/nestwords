@@ -82,7 +82,7 @@ export class AuthService implements IAuthService {
         name: firstName,
         email
       });
-      this.setTimeoutAuth(newAccount._id, 20000);
+      this.setTimeoutAuth(newAccount._id, 900000);
       if (mail.resultCode) {
         this.logger.log(`Account was created - ${email}`);
         return resStatus<null>(null, 1, "", "Account was created.");
