@@ -31,8 +31,5 @@ export class DeleteWordDTO {
   @MinLength(1)
   id:string
 
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
   user:string
 }

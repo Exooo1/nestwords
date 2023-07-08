@@ -14,10 +14,10 @@ export class TasksService {
   ) {
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
-  async handleCron() {
-    await this.authModel.deleteMany({ verify: 0 });
-    this.logger.log("Removed unnecessary users");
-  }
+  // @Cron(CronExpression.EVERY_30_MINUTES)
+  // async handleCron() {
+  //   await this.authModel.deleteMany({ verify: 0 });
+  //   this.logger.log("Removed unnecessary users");
+  // }
 
 }
