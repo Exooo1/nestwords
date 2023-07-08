@@ -24,7 +24,7 @@ export class WordsController {
 
   @Delete("delete-word")
   deleteWord(@Query() query, @Req() req): Promise<TStatusRes<string>> {
-    query.user = req.user;
+    query.user = req.user.id;
     return this.wordsService.deleteWord(query);
   }
 }

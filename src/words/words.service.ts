@@ -52,7 +52,7 @@ export class WordsService implements IWordsService {
       const repeat = words.profile.words[word.word[0].toLowerCase()].filter((item) => item.word === word.word);
       if (repeat.length) throw new HttpException("The word is already in the dictionary.", HttpStatus.CONFLICT);
       words.profile.words[word.word[0].toLowerCase()].unshift({
-        ...word
+        ...word,
       });
       words.profile.totalWords += 1;
       await words.save();

@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDTO, SignUpDTO } from "./auth.dto";
-import { TStatusRes } from "../utils/status";
-import { IAuthController, TLoginRes } from "./types";
 import { JwtAuthGuard } from "./guards/auth.guard";
+import { IAuthController, TLoginRes } from "./types";
+import { TStatusRes } from "../utils/status";
 
 @Controller("auth")
 export class AuthController implements IAuthController {

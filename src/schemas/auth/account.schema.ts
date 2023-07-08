@@ -1,24 +1,119 @@
-import { Prop, raw, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, SchemaTypes } from "mongoose";
-
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 export type TAccountDocument = Account & Document;
 
 @Schema()
 class Word {
-
-  @Prop( { type: String, trim: true })
+  @Prop({ type: String, trim: true })
   word: string;
 
-  @Prop( { type: String, trim: true })
+  @Prop({ type: String, trim: true })
   translate: string;
 
-  @Prop( { type: String, trim: true })
+  @Prop({ type: String, trim: true })
   description: string;
 
-  @Prop( { type: String, trim: true })
+  @Prop({ type: String, trim: true })
   added: string;
 }
+
+@Schema()
+export class Letters {
+  @Prop([Word])
+  a: Word[];
+
+  @Prop([Word])
+  b: Word[];
+
+  @Prop([Word])
+  c: Word[];
+
+  @Prop([Word])
+  d: Word[];
+
+  @Prop([Word])
+  e: Word[];
+
+  @Prop([Word])
+  f: Word[];
+
+  @Prop([Word])
+  g: Word[];
+
+  @Prop([Word])
+  h: Word[];
+
+  @Prop([Word])
+  i: Word[];
+
+  @Prop([Word])
+  j: Word[];
+
+  @Prop([Word])
+  k: Word[];
+
+  @Prop([Word])
+  l: Word[];
+
+  @Prop([Word])
+  m: Word[];
+
+  @Prop([Word])
+  n: Word[];
+
+  @Prop([Word])
+  o: Word[];
+
+  @Prop([Word])
+  p: Word[];
+
+  @Prop([Word])
+  q: Word[];
+
+  @Prop([Word])
+  r: Word[];
+
+  @Prop([Word])
+  s: Word[];
+
+  @Prop([Word])
+  t: Word[];
+
+  @Prop([Word])
+  u: Word[];
+
+  @Prop([Word])
+  v: Word[];
+
+  @Prop([Word])
+  w: Word[];
+
+  @Prop([Word])
+  x: Word[];
+
+  @Prop([Word])
+  y: Word[];
+
+  @Prop([Word])
+  z: Word[];
+}
+
+@Schema()
+export class Profile {
+  @Prop({ type: String, required: true })
+  firstName: string;
+
+  @Prop({ type: String, required: true })
+  lastName: string;
+
+  @Prop({ type: Number, required: true })
+  totalWords: number;
+
+  @Prop(Letters)
+  words: Letters;
+}
+
 
 @Schema({ timestamps: true })
 export class Account {
@@ -37,40 +132,8 @@ export class Account {
   @Prop({ required: true, trim: true })
   password: string;
 
-  @Prop(raw({
-    firstName: { type: String },
-    lastName: { type: String },
-    totalWords: { type: Number },
-    words: {
-      a: { type: Array<Word> },
-      b: { type: Array<Word> },
-      c: { type: Array<Word> },
-      d: { type: Array<Word> },
-      e: { type: Array<Word> },
-      f: { type: Array<Word> },
-      g: { type: Array<Word> },
-      h: { type: Array<Word> },
-      i: { type: Array<Word> },
-      j: { type: Array<Word> },
-      k: { type: Array<Word> },
-      l: { type: Array<Word> },
-      m: { type: Array<Word> },
-      n: { type: Array<Word> },
-      o: { type: Array<Word> },
-      p: { type: Array<Word> },
-      q: { type: Array<Word> },
-      r: { type: Array<Word> },
-      s: { type: Array<Word> },
-      t: { type: Array<Word> },
-      u: { type: Array<Word> },
-      v: { type: Array<Word> },
-      w: { type: Array<Word> },
-      x: { type: Array<Word> },
-      y: { type: Array<Word> },
-      z: { type: Array<Word> },
-    }
-  }))
-  profile: any;
+  @Prop(Profile)
+  profile:Profile
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
