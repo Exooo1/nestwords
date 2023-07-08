@@ -11,9 +11,7 @@ export class AddWordDTO {
   @MinLength(1)
   translate: string;
 
-  @IsNotEmpty()
   @IsString()
-  @MinLength(1)
   description: string;
 
   @IsNotEmpty()

@@ -8,6 +8,7 @@ import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Model } from "mongoose";
 import { IAuthService, TLoginRes } from "./types";
+import { SchedulerRegistry } from "@nestjs/schedule";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -47,11 +48,19 @@ export class AuthService implements IAuthService {
   };
   private readonly logger = new Logger(AuthService.name);
 
+  private setTimeoutAuth(id: string, milliseconds: number) {
+    const interval = setTimeout(async () => {
+      await this.authModel.deleteOne({ _id: id, verify: 0 });
+    }, milliseconds);
+    this.schedulerRegistry.addInterval(id, interval);
+  }
+
   constructor(
     @InjectModel(Account.name)
     private readonly authModel: Model<TAccountDocument>,
     private readonly jwtService: JwtService,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private schedulerRegistry: SchedulerRegistry
   ) {
   }
 
@@ -73,6 +82,7 @@ export class AuthService implements IAuthService {
         name: firstName,
         email
       });
+      this.setTimeoutAuth(newAccount._id, 10000);
       if (mail.resultCode) {
         this.logger.log(`Account was created - ${email}`);
         return resStatus<null>(null, 1, "", "Account was created.");
