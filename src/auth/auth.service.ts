@@ -48,11 +48,17 @@ export class AuthService implements IAuthService {
   };
   private readonly logger = new Logger(AuthService.name);
 
-  private setTimeoutAuth(id: string, milliseconds: number) {
+  deleteTimeoutAuth(id: string) {
+    this.schedulerRegistry.deleteTimeout(id);
+    this.logger.warn(`Timeout ${id} deleted!`);
+  }
+
+  setTimeoutAuth(id: string, milliseconds: number) {
     const interval = setTimeout(async () => {
-      await this.authModel.deleteOne({ _id: id, verify: 0 });
+      this.authModel.deleteOne({ _id: id, verify: 0 });
+      this.deleteTimeoutAuth(id);
     }, milliseconds);
-    this.schedulerRegistry.addInterval(id, interval);
+    this.schedulerRegistry.addTimeout(id, interval);
   }
 
   constructor(
@@ -82,7 +88,7 @@ export class AuthService implements IAuthService {
         name: firstName,
         email
       });
-      this.setTimeoutAuth(newAccount._id, 900000);
+      this.setTimeoutAuth(newAccount._id, 900_000);
       if (mail.resultCode) {
         this.logger.log(`Account was created - ${email}`);
         return resStatus<null>(null, 1, "", "Account was created.");

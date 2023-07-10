@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Cron, CronExpression, Interval } from "@nestjs/schedule";
+import { Cron, CronExpression, Interval, SchedulerRegistry } from "@nestjs/schedule";
 import { InjectModel } from "@nestjs/mongoose";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
 import { Model } from "mongoose";
@@ -10,14 +10,15 @@ export class TasksService {
 
   constructor(
     @InjectModel(Account.name)
-    private readonly authModel: Model<TAccountDocument>
+    private readonly authModel: Model<TAccountDocument>,
+    private schedulerRegistry: SchedulerRegistry
   ) {
   }
 
-  // @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_5_SECONDS)
   // async handleCron() {
-  //   await this.authModel.deleteMany({ verify: 0 });
-  //   this.logger.log("Removed unnecessary users");
+  //   const timeouts = this.schedulerRegistry.getTimeouts();
+  //   timeouts.forEach(key => console.log(`Timeout Name: ${key}`))
   // }
 
 }
