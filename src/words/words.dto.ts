@@ -30,6 +30,29 @@ export class DeleteWordDTO {
   @IsString()
   @MinLength(1)
   id:string
+}
 
-  user:string
+export class ChangeWordDTO {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  word:string
+
+  @IsString()
+  description:string
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  id:string
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  translate:string
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  added:string
 }

@@ -22,3 +22,7 @@ export type TLoginRes = {
   token: string
   auth: number
 }
+
+export type TUserToken = {
+  user: string
+}

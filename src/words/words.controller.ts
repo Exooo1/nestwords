@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { WordsService } from "./words.service";
 import { TStatusRes } from "../utils/status";
 import { TAccountWord } from "../schemas/auth/types";
 import { TWordsRes } from "./types";
 import { JwtAuthGuard } from "../auth/guards/auth.guard";
-import { AddWordDTO, DeleteWordDTO } from "./words.dto";
+import { AddWordDTO, ChangeWordDTO, DeleteWordDTO } from "./words.dto";
 
 @UseGuards(JwtAuthGuard)
 @Controller("words")
@@ -24,8 +24,12 @@ export class WordsController {
   }
 
   @Delete("delete-word")
-  deleteWord(@Query() query:DeleteWordDTO, @Req() req): Promise<TStatusRes<string>> {
-    query.user = req.user.id;
-    return this.wordsService.deleteWord(query);
+  deleteWord(@Query() query: DeleteWordDTO, @Req() req): Promise<TStatusRes<string>> {
+    return this.wordsService.deleteWord(query, req.user.id);
+  }
+
+  @Put("change-word")
+  changeWord(@Body() data: ChangeWordDTO, @Req() req) {
+    return this.wordsService.changeWord(data, req.user.id);
   }
 }
