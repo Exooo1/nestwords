@@ -92,18 +92,39 @@ export class WordsService implements IWordsService {
     }
   }
 
-  async changeWord(data:TChangeWord,user:string):Promise<TStatusRes<string>>{
+  async changeWord(data: TChangeWord, user: string): Promise<TStatusRes<string>> {
     try {
-      const {word, translate, description, id} = data
-      let person = (await this.authModel.findOne({_id:  user})) as IAccount
-      if(!person) throw new HttpException('Not Found user!', HttpStatus.NOT_FOUND)
-      const result = person.profile.words[word[0].toLowerCase()].findIndex((item) => item._id == id)
-      if(result === -1) throw new HttpException('You can\'t change a word that you don\'t have in the dictionary',HttpStatus.NOT_FOUND)
-      person.profile.words[word[0].toLowerCase()][result].word = word
-      person.profile.words[word[0].toLowerCase()][result].translate = translate
-      person.profile.words[word[0].toLowerCase()][result].description = description
-      await person.save()
-      return resStatus<string>(`You changed word @${word}`, 1, '', ``)
+      const { word, translate, description, id } = data;
+      let person = (await this.authModel.findOne({ _id: user })) as IAccount;
+      if (!person) throw new HttpException("Not Found user!", HttpStatus.NOT_FOUND);
+      const result = person.profile.words[word[0].toLowerCase()].findIndex((item) => item._id == id);
+      if (result === -1) throw new HttpException("You can't change a word that you don't have in the dictionary", HttpStatus.NOT_FOUND);
+      person.profile.words[word[0].toLowerCase()][result].word = word;
+      person.profile.words[word[0].toLowerCase()][result].translate = translate;
+      person.profile.words[word[0].toLowerCase()][result].description = description;
+      await person.save();
+      return resStatus<string>(`You changed word @${word}`, 1, "", ``);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async findWord(word: string, user: string) {
+    try {
+      const profile = (await this.authModel.findOne({ _id: user })) as IAccount;
+      if (!profile) throw new HttpException("Not Found words!", HttpStatus.NOT_FOUND);
+      const filterWords = profile.profile.words[word[0].toLowerCase()].filter((item) =>
+        item.word.includes(word[0].toUpperCase() + word.slice(1))
+      );
+      return resStatus<Array<TAccountWord>>(filterWords, 1);
     } catch (err) {
       const error = err as HttpException;
       let status: number;

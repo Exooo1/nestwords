@@ -32,4 +32,9 @@ export class WordsController {
   changeWord(@Body() data: ChangeWordDTO, @Req() req) {
     return this.wordsService.changeWord(data, req.user.id);
   }
+
+  @Get("find-words")
+  findWord(@Query("word") word: string, @Req() req) {
+    return this.wordsService.findWord(word, req.user.id);
+  }
 }

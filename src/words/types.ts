@@ -8,7 +8,9 @@ export interface IWordsService {
 
   deleteWord(word: TDeleteWord, token: string): Promise<TStatusRes<string>>;
 
-  changeWord(data: TChangeWord, token:string): Promise<TStatusRes<string>>;
+  changeWord(data: TChangeWord, token: string): Promise<TStatusRes<string>>;
+
+  findWord(data: string, token: string): Promise<TStatusRes<Array<TAccountWord>>>;
 }
 
 export type TWordsRes = {
@@ -22,8 +24,8 @@ export type TDeleteWord = {
 }
 
 export type TChangeWord = {
-  word:string
-  description:string
-  translate:string
-  id:string
+  word: string
+  description: string
+  translate: string
+  id: string
 }
