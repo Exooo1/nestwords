@@ -4,7 +4,7 @@ import { TStatusRes } from "../utils/status";
 import { TAccountWord } from "../schemas/auth/types";
 import { TWordsRes } from "./types";
 import { JwtAuthGuard } from "../auth/guards/auth.guard";
-import { AddWordDTO, ChangeWordDTO, DeleteWordDTO } from "./words.dto";
+import { AddWordDTO, ChangeWordDTO, DeleteWordDTO, SortWordsDTO } from "./words.dto";
 
 @UseGuards(JwtAuthGuard)
 @Controller("words")
@@ -29,12 +29,17 @@ export class WordsController {
   }
 
   @Put("change-word")
-  changeWord(@Body() data: ChangeWordDTO, @Req() req) {
+  changeWord(@Body() data: ChangeWordDTO, @Req() req): Promise<TStatusRes<string>> {
     return this.wordsService.changeWord(data, req.user.id);
   }
 
   @Get("find-words")
-  findWord(@Query("word") word: string, @Req() req) {
+  findWord(@Query("word") word: string, @Req() req): Promise<TStatusRes<Array<TAccountWord>>> {
     return this.wordsService.findWord(word, req.user.id);
+  }
+
+  @Post("sort-words")
+  sortWords(@Body() data: SortWordsDTO, @Req() req): Promise<TStatusRes<Array<TAccountWord>>> {
+    return this.wordsService.sortWords(data, req.user.id);
   }
 }

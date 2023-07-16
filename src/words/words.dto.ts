@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsIn, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class AddWordDTO {
   @IsNotEmpty()
@@ -24,35 +24,46 @@ export class DeleteWordDTO {
   @IsNotEmpty()
   @IsString()
   @MinLength(1)
-  letter:string
+  letter: string;
 
   @IsNotEmpty()
   @IsString()
   @MinLength(1)
-  id:string
+  id: string;
 }
 
 export class ChangeWordDTO {
   @IsNotEmpty()
   @IsString()
   @MinLength(1)
-  word:string
+  word: string;
 
   @IsString()
-  description:string
-
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(1)
-  id:string
+  description: string;
 
   @IsNotEmpty()
   @IsString()
   @MinLength(1)
-  translate:string
+  id: string;
 
   @IsNotEmpty()
   @IsString()
   @MinLength(1)
-  added:string
+  translate: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  added: string;
+}
+
+export class SortWordsDTO {
+  @IsNotEmpty()
+  @IsBoolean()
+  isSort: boolean;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsIn(['ADDED', 'DESCRIPTION'])
+  sortType: 'ADDED' | 'DESCRIPTION';
 }

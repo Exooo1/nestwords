@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { resStatus, TStatusRes } from "../utils/status";
-import { IWordsService, TChangeWord, TDeleteWord, TWordsRes } from "./types";
+import { IWordsService, TChangeWord, TDeleteWord, TSortWords, TWordsRes } from "./types";
 import { IAccount, TAccountWord } from "../schemas/auth/types";
 import { InjectModel } from "@nestjs/mongoose";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
@@ -117,7 +117,7 @@ export class WordsService implements IWordsService {
     }
   }
 
-  async findWord(word: string, user: string) {
+  async findWord(word: string, user: string):Promise<TStatusRes<Array<TAccountWord>>> {
     try {
       const profile = (await this.authModel.findOne({ _id: user })) as IAccount;
       if (!profile) throw new HttpException("Not Found words!", HttpStatus.NOT_FOUND);
@@ -126,6 +126,42 @@ export class WordsService implements IWordsService {
       );
       return resStatus<Array<TAccountWord>>(filterWords, 1);
     } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async sortWords(data:TSortWords,user:string):Promise<TStatusRes<Array<TAccountWord>>>{
+    try{
+      const profile = (await this.authModel.findOne({_id: user})) as IAccount
+      if (!profile) throw new HttpException('Not Found!',HttpStatus.NOT_FOUND)
+      const array: Array<TAccountWord> = []
+      const values = Object.values(profile.profile.words) as Array<Array<TAccountWord>>
+      for (let i = 0; i < values.length; i++) {
+        if (values[i].length > 0) {
+          array.push(...values[i])
+        }
+      }
+      let sort
+      switch (data.sortType) {
+        case 'ADDED':
+          sort = data.isSort
+            ? array.sort((a, b) => new Date(a.added).valueOf() - new Date(b.added).valueOf())
+            : array.sort((a, b) => new Date(b.added).valueOf() - new Date(a.added).valueOf())
+          break
+        case 'DESCRIPTION':
+          sort = array.filter((item) => item.description.length >= 1)
+          break
+      }
+      return resStatus<Array<TAccountWord>>(sort,1)
+    }catch (err){
       const error = err as HttpException;
       let status: number;
       if (typeof error.getStatus === "function") status = error.getStatus();

@@ -11,6 +11,8 @@ export interface IWordsService {
   changeWord(data: TChangeWord, token: string): Promise<TStatusRes<string>>;
 
   findWord(data: string, token: string): Promise<TStatusRes<Array<TAccountWord>>>;
+
+  sortWords(data:TSortWords,token:string): Promise<TStatusRes<Array<TAccountWord>>>
 }
 
 export type TWordsRes = {
@@ -28,4 +30,9 @@ export type TChangeWord = {
   description: string
   translate: string
   id: string
+}
+
+export type TSortWords = {
+  isSort:boolean
+  sortType:'ADDED' | 'DESCRIPTION'
 }
