@@ -42,4 +42,9 @@ export class WordsController {
   sortWords(@Body() data: SortWordsDTO, @Req() req): Promise<TStatusRes<Array<TAccountWord>>> {
     return this.wordsService.sortWords(data, req.user.id);
   }
+
+  @Get("download-words")
+  downloadWords(@Req() req):Promise<TStatusRes<string>> {
+    return this.wordsService.downloadWords(req.user.id,);
+  }
 }

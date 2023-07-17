@@ -5,6 +5,7 @@ import { IAccount, TAccountWord } from "../schemas/auth/types";
 import { InjectModel } from "@nestjs/mongoose";
 import { Account, TAccountDocument } from "../schemas/auth/account.schema";
 import { Model } from "mongoose";
+import * as fs from "fs";
 
 
 @Injectable()
@@ -117,7 +118,7 @@ export class WordsService implements IWordsService {
     }
   }
 
-  async findWord(word: string, user: string):Promise<TStatusRes<Array<TAccountWord>>> {
+  async findWord(word: string, user: string): Promise<TStatusRes<Array<TAccountWord>>> {
     try {
       const profile = (await this.authModel.findOne({ _id: user })) as IAccount;
       if (!profile) throw new HttpException("Not Found words!", HttpStatus.NOT_FOUND);
@@ -138,30 +139,63 @@ export class WordsService implements IWordsService {
     }
   }
 
-  async sortWords(data:TSortWords,user:string):Promise<TStatusRes<Array<TAccountWord>>>{
-    try{
-      const profile = (await this.authModel.findOne({_id: user})) as IAccount
-      if (!profile) throw new HttpException('Not Found!',HttpStatus.NOT_FOUND)
-      const array: Array<TAccountWord> = []
-      const values = Object.values(profile.profile.words) as Array<Array<TAccountWord>>
+  async sortWords(data: TSortWords, user: string): Promise<TStatusRes<Array<TAccountWord>>> {
+    try {
+      const profile = (await this.authModel.findOne({ _id: user })) as IAccount;
+      if (!profile) throw new HttpException("Not Found!", HttpStatus.NOT_FOUND);
+      const array: Array<TAccountWord> = [];
+      const values = Object.values(profile.profile.words) as Array<Array<TAccountWord>>;
       for (let i = 0; i < values.length; i++) {
         if (values[i].length > 0) {
-          array.push(...values[i])
+          array.push(...values[i]);
         }
       }
-      let sort
+      let sort;
       switch (data.sortType) {
-        case 'ADDED':
+        case "ADDED":
           sort = data.isSort
             ? array.sort((a, b) => new Date(a.added).valueOf() - new Date(b.added).valueOf())
-            : array.sort((a, b) => new Date(b.added).valueOf() - new Date(a.added).valueOf())
-          break
-        case 'DESCRIPTION':
-          sort = array.filter((item) => item.description.length >= 1)
-          break
+            : array.sort((a, b) => new Date(b.added).valueOf() - new Date(a.added).valueOf());
+          break;
+        case "DESCRIPTION":
+          sort = array.filter((item) => item.description.length >= 1);
+          break;
       }
-      return resStatus<Array<TAccountWord>>(sort,1)
-    }catch (err){
+      return resStatus<Array<TAccountWord>>(sort, 1);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async downloadWords(user: string): Promise<TStatusRes<string>> {
+    try {
+      const profile = (await this.authModel.findOne({ _id: user })) as IAccount;
+      if (!profile) throw new HttpException("Not Found User", HttpStatus.NOT_FOUND);
+      const array: Array<TAccountWord> = [];
+      const values = Object.values(profile.profile.words) as Array<Array<TAccountWord>>;
+      for (let i = 0; i < values.length; i++) {
+        if (values[i].length > 0) {
+          array.push(...values[i]);
+        }
+      }
+      const result = array
+        .map((item, index) => {
+          return `${index + 1}. ${item.word} - ${item.translate}\n`;
+        })
+        .join("");
+      fs.unlink("src/words.txt", (err) => console.log(err));
+      fs.appendFileSync("src/words.txt", result);
+      if (result.length >= 1) return resStatus<string>(result, 1);
+      else resStatus<null>(null, 0, "", "We didn't find the words!");
+    } catch (err) {
       const error = err as HttpException;
       let status: number;
       if (typeof error.getStatus === "function") status = error.getStatus();

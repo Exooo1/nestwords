@@ -13,6 +13,8 @@ export interface IWordsService {
   findWord(data: string, token: string): Promise<TStatusRes<Array<TAccountWord>>>;
 
   sortWords(data:TSortWords,token:string): Promise<TStatusRes<Array<TAccountWord>>>
+
+  downloadWords(token:string):Promise<TStatusRes<string>>
 }
 
 export type TWordsRes = {
