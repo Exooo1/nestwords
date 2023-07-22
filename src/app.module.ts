@@ -7,9 +7,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { WordsModule } from "./words/words.module";
+import { ProfileModule } from "./profile/profile.module";
 
 @Module({
   imports: [
+    ProfileModule,
     WordsModule,
     AuthModule,
     ScheduleModule.forRoot(),

@@ -191,8 +191,6 @@ export class WordsService implements IWordsService {
           return `${index + 1}. ${item.word} - ${item.translate}\n`;
         })
         .join("");
-      fs.unlink("src/words.txt", (err) => console.log(err));
-      fs.appendFileSync("src/words.txt", result);
       if (result.length >= 1) return resStatus<string>(result, 1);
       else resStatus<null>(null, 0, "", "We didn't find the words!");
     } catch (err) {
