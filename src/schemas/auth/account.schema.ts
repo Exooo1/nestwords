@@ -112,6 +112,15 @@ export class Profile {
 
   @Prop(Letters)
   words: Letters;
+
+  @Prop({ type: String, default: "" })
+  avatar: string;
+
+  @Prop({ type: Number, default: 0 })
+  days: number;
+
+  @Prop({ type: Number, default: 0 })
+  notes: number;
 }
 
 
@@ -133,7 +142,7 @@ export class Account {
   password: string;
 
   @Prop(Profile)
-  profile:Profile
+  profile: Profile;
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
