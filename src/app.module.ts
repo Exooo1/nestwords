@@ -30,6 +30,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes('auth');
+      .forRoutes('auth','profile','words');
   }
 }
