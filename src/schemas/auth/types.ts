@@ -9,6 +9,9 @@ export interface IAccountProfile {
    readonly firstName: string;
    readonly lastName: string;
    totalWords: number;
+   days:number;
+   notes:number;
+   avatar:string
    words: {
      a: TAccountWord[];
      b: TAccountWord[];

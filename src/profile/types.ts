@@ -6,9 +6,11 @@ export type TProfileInfo = {
   notes: number;
   firstName: string;
   lastName: string;
-  img: string;
+  avatar: string;
 };
 
 export interface IProfile {
-  getProfile(token:string): Promise<TStatusRes<TProfileInfo>>;
+  getProfile(token: string): Promise<TStatusRes<TProfileInfo>>;
+
+  setAvatar(token: string,avatar:string): Promise<TStatusRes<string>>;
 }

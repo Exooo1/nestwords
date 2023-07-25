@@ -4,13 +4,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception/custom.exception';
 import { CustomLogger } from './logger/logger';
 import { NestExpressApplication } from "@nestjs/platform-express";
-import * as path from "path";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: new CustomLogger(),
   });
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://127.0.0.1:5173',
+    credentials: true,
+  });
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,7 +22,6 @@ async function bootstrap() {
       // transform:true преобразует отправляемый тип в указанный тип в DTO
     }),
   );
-  app.useStaticAssets(path.join('./src/uploads/'))
   await app.listen(8080);
 }
 

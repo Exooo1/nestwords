@@ -14,6 +14,9 @@ import * as bcrypt from "bcryptjs";
 @Injectable()
 export class AuthService implements IAuthService {
   readonly profile: IAccountProfile = {
+    avatar:'',
+    days:0,
+    notes:0,
     firstName: "",
     lastName: "",
     totalWords: 0,

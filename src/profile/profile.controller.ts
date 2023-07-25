@@ -7,33 +7,39 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
 
-@UseGuards(JwtAuthGuard)
+
+const test =() =>{
+  return 'names'
+}
+
 @Controller("profile")
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get("get-profile")
   getProfile(@Req() req): Promise<TStatusRes<TProfileInfo>> {
     return this.profileService.getProfile(req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post("upload")
   @UseInterceptors(FileInterceptor("file", {
     storage: diskStorage({
       destination: "./src/uploads",
       filename(req, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
-        // @ts-ignore
-        callback(null, `${req.user.id+file.originalname}`);
+        callback(null, `${file.originalname}`);
       }
     })
   }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File,@Req() req) {
-    return resStatus(`${path.resolve(__dirname,'../..',`src/uploads/${req.user.id+file.originalname}`)}`,1);
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req) {
+    return this.profileService.setAvatar(req.user.id, `${file.originalname}`);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get("get-avatar/:id")
   getAvatar(@Res() res, @Req() req) {
-    return res.sendFile(`${path.resolve(__dirname,'../..',`src/uploads/${req.params.id+req.user.id}`)}`)
+    return res.sendFile(`${path.resolve(__dirname, "../..", `src/uploads/${req.params.id}`)}`);
   }
 }

@@ -18,9 +18,37 @@ export class ProfileService implements IProfile {
     try {
       const account = await this.authModel.findOne({ _id: user }, { "profile.words": 0 }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
-      return resStatus<any>(account.profile, 1);
+      return resStatus<TProfileInfo>(account.profile, 1);
     } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
 
+  async setAvatar(user: string, avatar: string): Promise<TStatusRes<string>> {
+    try {
+      const account = await this.authModel.findOne({ _id: user }) as IAccount;
+      if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
+      account.profile.avatar = avatar;
+      await account.save();
+      return resStatus<string>(account.profile.avatar, 1);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
   }
 }
