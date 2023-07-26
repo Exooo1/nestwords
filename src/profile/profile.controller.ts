@@ -37,7 +37,6 @@ export class ProfileController {
     return this.profileService.setAvatar(req.user.id, `${file.originalname}`);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("get-avatar/:id")
   getAvatar(@Res() res, @Req() req) {
     return res.sendFile(`${path.resolve(__dirname, "../..", `src/uploads/${req.params.id}`)}`);

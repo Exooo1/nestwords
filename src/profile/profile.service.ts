@@ -5,6 +5,8 @@ import { Model } from "mongoose";
 import { IProfile, TProfileInfo } from "./types";
 import { resStatus, TStatusRes } from "../utils/status";
 import { IAccount } from "../schemas/auth/types";
+import * as fs from "fs-extra";
+import * as path from "path";
 
 
 @Injectable()
@@ -36,6 +38,10 @@ export class ProfileService implements IProfile {
     try {
       const account = await this.authModel.findOne({ _id: user }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
+      if (account.profile.avatar) {
+        const avatarPath = path.resolve(__dirname, "../../", `src/uploads/${account.profile.avatar}`);
+        await fs.unlink(avatarPath, (err) => this.logger.error(err));
+      }
       account.profile.avatar = avatar;
       await account.save();
       return resStatus<string>(account.profile.avatar, 1);
