@@ -9,7 +9,7 @@ export interface IAccountProfile {
    readonly firstName: string;
    readonly lastName: string;
    totalWords: number;
-   days:number;
+   days:Array<string>;
    notes:number;
    avatar:string
    words: {

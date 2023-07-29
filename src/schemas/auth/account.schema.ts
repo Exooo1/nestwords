@@ -116,8 +116,8 @@ export class Profile {
   @Prop({ type: String, default: "" })
   avatar: string;
 
-  @Prop({ type: Number, default: 0 })
-  days: number;
+  @Prop([String])
+  days: Array<string>;
 
   @Prop({ type: Number, default: 0 })
   notes: number;

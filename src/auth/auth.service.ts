@@ -14,9 +14,9 @@ import * as bcrypt from "bcryptjs";
 @Injectable()
 export class AuthService implements IAuthService {
   readonly profile: IAccountProfile = {
-    avatar:'',
-    days:0,
-    notes:0,
+    avatar: "",
+    days: [],
+    notes: 0,
     firstName: "",
     lastName: "",
     totalWords: 0,
@@ -175,6 +175,14 @@ export class AuthService implements IAuthService {
     try {
       const account = await this.authModel.findOne({ _id: id });
       if (!account) throw new HttpException("NotFound", HttpStatus.NOT_FOUND);
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1)
+      const yesterdayDate = account.profile.days.find(el=>el===yesterday.toLocaleDateString())
+      if(!yesterdayDate) account.profile.days = []
+      const todayDate = account.profile.days.find(el=>el===today.toLocaleDateString())
+      if(!todayDate) account.profile.days.push(today.toLocaleDateString())
+      await account.save()
       return resStatus<number>(account.auth, 1);
     } catch (err) {
       const error = err as HttpException;

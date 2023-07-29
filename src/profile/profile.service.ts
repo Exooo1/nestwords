@@ -20,7 +20,7 @@ export class ProfileService implements IProfile {
     try {
       const account = await this.authModel.findOne({ _id: user }, { "profile.words": 0 }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
-      return resStatus<TProfileInfo>(account.profile, 1);
+      return resStatus<TProfileInfo>({ ...account.profile, days: account.profile.days.length }, 1);
     } catch (err) {
       const error = err as HttpException;
       let status: number;

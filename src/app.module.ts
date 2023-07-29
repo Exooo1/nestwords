@@ -8,9 +8,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { WordsModule } from "./words/words.module";
 import { ProfileModule } from "./profile/profile.module";
+import { TestModule } from "./test/test.module";
 
 @Module({
   imports: [
+    TestModule,
     ProfileModule,
     WordsModule,
     AuthModule,
@@ -30,6 +32,6 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes('auth','profile','words');
+      .forRoutes('*');
   }
 }
