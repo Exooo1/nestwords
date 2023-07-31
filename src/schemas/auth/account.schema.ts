@@ -113,13 +113,13 @@ export class Profile {
   @Prop(Letters)
   words: Letters;
 
-  @Prop({ type: String, default: "" })
+  @Prop({ type: String, default: "", required: true })
   avatar: string;
 
   @Prop([String])
   days: Array<string>;
 
-  @Prop({ type: Number, default: 0 })
+  @Prop({ type: Number, default: 0, required: true })
   notes: number;
 }
 
