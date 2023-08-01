@@ -90,7 +90,7 @@ export class AuthService implements IAuthService {
         verify: newAccount._id.toString(),
         name: firstName,
         email
-      });
+      }, "create");
       this.setTimeoutAuth(newAccount._id, 900_000);
       if (mail.resultCode) {
         this.logger.log(`Account was created - ${email}`);
@@ -132,13 +132,13 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async sendEmail(data: EmailDTO): Promise<TStatusRes<null>> {
+  async sendEmail(data: EmailDTO, type: string): Promise<TStatusRes<null>> {
     try {
       const { name, email, verify } = data;
       await this.mailerService.sendMail({
         to: email,
         subject: "Accept registration",
-        template: "email",
+        template: type === "create" ? "email" : "password",
         context: {
           username: name,
           verify
@@ -177,12 +177,12 @@ export class AuthService implements IAuthService {
       if (!account) throw new HttpException("NotFound", HttpStatus.NOT_FOUND);
       const today = new Date();
       const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1)
-      const yesterdayDate = account.profile.days.find(el=>el===yesterday.toLocaleDateString())
-      if(!yesterdayDate) account.profile.days = []
-      const todayDate = account.profile.days.find(el=>el===today.toLocaleDateString())
-      if(!todayDate) account.profile.days.push(today.toLocaleDateString())
-      await account.save()
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayDate = account.profile.days.find(el => el === yesterday.toLocaleDateString());
+      if (!yesterdayDate) account.profile.days = [];
+      const todayDate = account.profile.days.find(el => el === today.toLocaleDateString());
+      if (!todayDate) account.profile.days.push(today.toLocaleDateString());
+      await account.save();
       return resStatus<number>(account.auth, 1);
     } catch (err) {
       const error = err as HttpException;
@@ -201,6 +201,33 @@ export class AuthService implements IAuthService {
     try {
       await this.authModel.updateOne({ _id: id }, { auth: 0 });
       return resStatus<number>(0, 0);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async changePassword(email: string): Promise<TStatusRes<null>> {
+    try {
+      const account = await this.authModel.findOne({ email }) as IAccount;
+      if (!account) throw new HttpException("NotFound account!", HttpStatus.NOT_FOUND);
+      const mail = await this.sendEmail({
+        name: account.profile.firstName,
+        email: account.email,
+        verify: account._id
+      }, "");
+      if (mail.resultCode) {
+        this.logger.log(`Changed password - ${mail}`);
+        return resStatus<null>(null, 1, "", "Password was changed.");
+      } else throw new HttpException(mail.error, HttpStatus.FORBIDDEN);
+      return resStatus<null>(null, 1);
     } catch (err) {
       const error = err as HttpException;
       let status: number;

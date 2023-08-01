@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDTO, SignUpDTO } from "./auth.dto";
 import { JwtAuthGuard } from "./guards/auth.guard";
@@ -35,5 +35,10 @@ export class AuthController implements IAuthController {
   @Put("logout")
   logOut(@Req() req) {
     return this.authService.logOut(req.user.id);
+  }
+
+  @Get('change-password')
+  changePassword(@Query("email") email: string): Promise<TStatusRes<null>>  {
+    return this.authService.changePassword(email);
   }
 }
