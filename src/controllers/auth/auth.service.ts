@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
-import { Account, TAccountDocument } from "../schemas/auth/account.schema";
+import { Account, TAccountDocument } from "../../schemas/auth/account.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { JwtService } from "@nestjs/jwt";
-import { IAccountProfile, IAccount } from "../schemas/auth/types";
-import { resStatus, TStatusRes } from "../utils/status";
+import { IAccountProfile, IAccount } from "../../schemas/auth/types";
+import { resStatus, TStatusRes } from "../../utils/status";
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Model } from "mongoose";

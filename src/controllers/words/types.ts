@@ -1,5 +1,5 @@
-import { TAccountWord } from "../schemas/auth/types";
-import { TStatusRes } from "../utils/status";
+import { TAccountWord } from "../../schemas/auth/types";
+import { TStatusRes } from "../../utils/status";
 
 export interface IWordsService {
   words(words: string, user: string): Promise<TStatusRes<TWordsRes>>;

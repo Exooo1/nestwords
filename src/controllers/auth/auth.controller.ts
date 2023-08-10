@@ -3,7 +3,8 @@ import { AuthService } from "./auth.service";
 import { LoginDTO, SignUpDTO } from "./auth.dto";
 import { JwtAuthGuard } from "./guards/auth.guard";
 import { IAuthController, TLoginRes } from "./types";
-import { TStatusRes } from "../utils/status";
+import { TStatusRes } from "../../utils/status";
+import { Token } from "../../decorators/token.decorator";
 
 @Controller("auth")
 export class AuthController implements IAuthController {
@@ -27,18 +28,18 @@ export class AuthController implements IAuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get("me")
-  me(@Req() req) {
-    return this.authService.me(req.user.id);
+  me(@Token("id") token: string) {
+    return this.authService.me(token);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put("logout")
-  logOut(@Req() req) {
-    return this.authService.logOut(req.user.id);
+  logOut(@Token("id") token: string) {
+    return this.authService.logOut(token);
   }
 
-  @Get('change-password')
-  changePassword(@Query("email") email: string): Promise<TStatusRes<null>>  {
+  @Get("change-password")
+  changePassword(@Query("email") email: string): Promise<TStatusRes<null>> {
     return this.authService.changePassword(email);
   }
 }

@@ -1,6 +1,6 @@
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
-import { TStatusRes } from "../utils/status";
-import { IAccountProfile } from "../schemas/auth/types";
+import { TStatusRes } from "../../utils/status";
+import { IAccountProfile } from "../../schemas/auth/types";
 
 export interface IAuthController {
   signUp: (data: SignUpDTO) => Promise<TStatusRes<string>>;

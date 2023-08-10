@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
-import { Account, AccountSchema } from "../schemas/auth/account.schema";
+import { Account, AccountSchema } from "../../schemas/auth/account.schema";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
-import { TasksModule } from "../cron/tasks.module";
+import { TasksModule } from "../../cron/tasks.module";
 import { JwtStrategy } from "./strategies/jwt-strategy";
 import { join, resolve } from "path";
 

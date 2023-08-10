@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards, UseInterceptors } from "@nestjs/common";
 import { TestService } from "./test.service";
 import { TestGuard } from "./test.guard";
-import { Roles } from "../profile/roles.decorator";
-import { TestInterceptor } from "../profile/test.interceptor";
+import { Roles } from "./roles.decorator";
+import { TestInterceptor } from "./test.interceptor";
+import { User } from "./user.decorator";
 
 @UseInterceptors(TestInterceptor)
 @Controller("test")
@@ -14,7 +15,8 @@ export class TestController {
   @UseGuards(TestGuard)
   @Get("/check/:role")
   @Roles('admin','simple-user','picker','cashier')
-  getTest() {
+  getTest(@User('role') token:any,@Req() req) {
+    console.log(token,'here!')
     return this.testService.getCheck();
   }
 }

@@ -1,4 +1,4 @@
-import { TStatusRes } from "../utils/status";
+import { TStatusRes } from "../../utils/status";
 
 export type TProfileInfo = {
   totalWords: number;

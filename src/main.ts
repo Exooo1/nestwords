@@ -4,13 +4,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception/custom.exception';
 import { CustomLogger } from './logger/logger';
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { PORT } from "./utils/path";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: new CustomLogger(),
   });
   app.enableCors({
-    origin: 'http://127.0.0.1:5173',
+    origin: PORT,
     credentials: true,
   });
   app.useGlobalFilters(new HttpExceptionFilter());

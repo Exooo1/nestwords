@@ -1,16 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/auth.guard";
 import { ProfileService } from "./profile.service";
-import { resStatus, TStatusRes } from "../utils/status";
+import { TStatusRes } from "../../utils/status";
 import { TProfileInfo } from "./types";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
-
-
-const test =() =>{
-  return 'names'
-}
+import { Token } from "../../decorators/token.decorator";
 
 @Controller("profile")
 export class ProfileController {
@@ -19,8 +15,8 @@ export class ProfileController {
 
   @UseGuards(JwtAuthGuard)
   @Get("get-profile")
-  getProfile(@Req() req): Promise<TStatusRes<TProfileInfo>> {
-    return this.profileService.getProfile(req.user.id);
+  getProfile(@Token("id") token: string): Promise<TStatusRes<TProfileInfo>> {
+    return this.profileService.getProfile(token);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -33,12 +29,12 @@ export class ProfileController {
       }
     })
   }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req) {
-    return this.profileService.setAvatar(req.user.id, `${file.originalname}`);
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Token("id") token: string) {
+    return this.profileService.setAvatar(token, `${file.originalname}`);
   }
 
   @Get("get-avatar/:id")
-  getAvatar(@Res() res, @Req() req) {
-    return res.sendFile(`${path.resolve(__dirname, "../..", `src/uploads/${req.params.id}`)}`);
+  getAvatar(@Req() req, @Res() res) {
+    return res.sendFile(`${path.resolve(__dirname, "../../../", `src/uploads/${req.params.id}`)}`);
   }
 }

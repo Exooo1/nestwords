@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Account, TAccountDocument } from "../schemas/auth/account.schema";
+import { Account, TAccountDocument } from "../../schemas/auth/account.schema";
 import { Model } from "mongoose";
 import { IProfile, TProfileInfo } from "./types";
-import { resStatus, TStatusRes } from "../utils/status";
-import { IAccount } from "../schemas/auth/types";
+import { resStatus, TStatusRes } from "../../utils/status";
+import { IAccount } from "../../schemas/auth/types";
 import * as fs from "fs-extra";
 import * as path from "path";
 
@@ -39,7 +39,7 @@ export class ProfileService implements IProfile {
       const account = await this.authModel.findOne({ _id: user }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
       if (account.profile.avatar) {
-        const avatarPath = path.resolve(__dirname, "../../", `src/uploads/${account.profile.avatar}`);
+        const avatarPath = path.resolve(__dirname, "../../../", `src/uploads/${account.profile.avatar}`);
         await fs.unlink(avatarPath, (err) => this.logger.error(err));
       }
       account.profile.avatar = avatar;

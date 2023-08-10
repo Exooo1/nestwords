@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { resStatus, TStatusRes } from "../utils/status";
+import { resStatus, TStatusRes } from "../../utils/status";
 import { IWordsService, TChangeWord, TDeleteWord, TSortWords, TWordsRes } from "./types";
-import { IAccount, TAccountWord } from "../schemas/auth/types";
+import { IAccount, TAccountWord } from "../../schemas/auth/types";
 import { InjectModel } from "@nestjs/mongoose";
-import { Account, TAccountDocument } from "../schemas/auth/account.schema";
+import { Account, TAccountDocument } from "../../schemas/auth/account.schema";
 import { Model } from "mongoose";
 import * as fs from "fs";
 
