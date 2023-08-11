@@ -1,9 +1,10 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 
-export const Token = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
+export const Token = createParamDecorator<string>(
+  (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    if ("id" in request?.user) return request.user.id;
-    return request.user;
+    const user = request.user;
+    return data ? user?.[data] : user;
   }
 );
