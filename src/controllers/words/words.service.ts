@@ -57,7 +57,7 @@ export class WordsService implements IWordsService {
       });
       words.profile.totalWords += 1;
       await words.save();
-      return resStatus<TAccountWord>(word, 1, "", `You added word @${word.word} ${new Date().toTimeString().split(" ")[0]}`);
+      return resStatus<TAccountWord>(words.profile.words[word.word[0].toLowerCase()][0], 1, "", `You added word @${word.word} ${new Date().toTimeString().split(" ")[0]}`);
     } catch (err) {
       const error = err as HttpException;
       let status: number;

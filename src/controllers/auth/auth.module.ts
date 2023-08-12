@@ -43,7 +43,7 @@ import { join, resolve } from "path";
             from: "vlasmaskalenchik1998@gmail.com"
           },
           template: {
-            dir: join(resolve(__dirname, ".."), "./templates"),
+            dir: join(resolve(__dirname, "../.."), "./templates"),
             adapter: new HandlebarsAdapter(),
             options: {
               strict: true
