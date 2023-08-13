@@ -247,7 +247,7 @@ export class AuthService implements IAuthService {
       const account = await this.authModel.findByIdAndUpdate({ _id: id }, { "password": await bcrypt.hash(password, 11) }) as IAccount;
       if (!account) throw new HttpException("NotFound account!", HttpStatus.NOT_FOUND);
       account.save;
-      return resStatus<null>(null, 1);
+      return resStatus<null>(null, 1, '','Your password was changed');
     } catch (err) {
       const error = err as HttpException;
       let status: number;
