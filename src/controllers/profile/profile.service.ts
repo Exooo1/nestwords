@@ -7,6 +7,7 @@ import { resStatus, TStatusRes } from "../../utils/status";
 import { IAccount } from "../../schemas/auth/types";
 import * as fs from "fs-extra";
 import * as path from "path";
+import { Response } from "express";
 
 
 @Injectable()
@@ -35,16 +36,39 @@ export class ProfileService implements IProfile {
   }
 
   async setAvatar(user: string, avatar: string): Promise<TStatusRes<string>> {
+    const verifyImage = ["jpg", "png"];
     try {
       const account = await this.authModel.findOne({ _id: user }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
+      const verifiedImg = verifyImage.some(el=>avatar.includes(el))
+      if(!verifiedImg) throw new HttpException("The site supports only (png,jpg) files", HttpStatus.FORBIDDEN);
       if (account.profile.avatar) {
-        const avatarPath = path.resolve(__dirname, "../../../", `src/uploads/${account.profile.avatar}`);
-        await fs.unlink(avatarPath, (err) => this.logger.error(err));
+        if (account.profile.avatar !== "default.png") {
+          const avatarPath = path.resolve(__dirname, "../../../", `src/uploads/${account.profile.avatar}`);
+          await fs.unlink(avatarPath, (err) => this.logger.error(err));
+        }
       }
       account.profile.avatar = avatar;
       await account.save();
       return resStatus<string>(account.profile.avatar, 1);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async getAvatar(id: string, res: Response): Promise<string> {
+    try {
+      const filePath = path.resolve(__dirname, "../../../", `src/uploads/${id}`);
+      if (filePath) return filePath;
+      else return path.resolve(__dirname, "../../../", `src/uploads/default.png`);
     } catch (err) {
       const error = err as HttpException;
       let status: number;

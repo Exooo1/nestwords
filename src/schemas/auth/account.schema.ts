@@ -113,7 +113,7 @@ export class Profile {
   @Prop(Letters)
   words: Letters;
 
-  @Prop({ type: String, default: "", required: true })
+  @Prop({ type: String, default: "default.png"})
   avatar: string;
 
   @Prop([String])

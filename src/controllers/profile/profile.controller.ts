@@ -34,7 +34,7 @@ export class ProfileController {
   }
 
   @Get("get-avatar/:id")
-  getAvatar(@Req() req, @Res() res) {
-    return res.sendFile(`${path.resolve(__dirname, "../../../", `src/uploads/${req.params.id}`)}`);
+  async getAvatar(@Req() req, @Res() res) {
+    return res.sendFile(await this.profileService.getAvatar(req.params.id, res));
   }
 }
