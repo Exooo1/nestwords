@@ -28,13 +28,13 @@ export class AuthController implements IAuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get("me")
-  me(@Token("id") token: string) {
+  me(@Token("id") token: string):Promise<TStatusRes<number>>  {
     return this.authService.me(token);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put("logout")
-  logOut(@Token("id") token: string) {
+  logOut(@Token("id") token: string): Promise<TStatusRes<number>> {
     return this.authService.logOut(token);
   }
 

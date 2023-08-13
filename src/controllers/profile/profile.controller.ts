@@ -29,12 +29,12 @@ export class ProfileController {
       }
     })
   }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File, @Token("id") token: string) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Token("id") token: string): Promise<TStatusRes<string>> {
     return this.profileService.setAvatar(token, `${file.originalname}`);
   }
 
   @Get("get-avatar/:id")
-  async getAvatar(@Req() req, @Res() res) {
+  async getAvatar(@Req() req, @Res() res): Promise<string> {
     return res.sendFile(await this.profileService.getAvatar(req.params.id, res));
   }
 }
