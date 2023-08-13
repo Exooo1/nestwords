@@ -17,6 +17,7 @@ export interface IAuthService {
   setTimeoutAuth: (id: string, milliseconds: number) => void;
   deleteTimeoutAuth: (id: string) => void;
   changePassword: (email: string) => Promise<TStatusRes<null>>;
+  newPassword: (data:TNewPassword) => Promise<TStatusRes<null>>;
 }
 
 export type TLoginRes = {
@@ -24,6 +25,7 @@ export type TLoginRes = {
   auth: number
 }
 
-export type TUserToken = {
-  user: string
+export type TNewPassword = {
+  id:string
+  password:string
 }

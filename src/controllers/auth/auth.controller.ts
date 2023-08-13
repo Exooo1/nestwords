@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { LoginDTO, SignUpDTO } from "./auth.dto";
+import { LoginDTO, NewPasswordDTO, SignUpDTO } from "./auth.dto";
 import { JwtAuthGuard } from "./guards/auth.guard";
 import { IAuthController, TLoginRes } from "./types";
 import { TStatusRes } from "../../utils/status";
@@ -41,5 +41,21 @@ export class AuthController implements IAuthController {
   @Get("change-password")
   changePassword(@Query("email") email: string): Promise<TStatusRes<null>> {
     return this.authService.changePassword(email);
+  }
+
+  @Post("new-password")
+  newPassword(@Body() data:NewPasswordDTO): Promise<TStatusRes<null>> {
+    return this.authService.newPassword(data);
+
+
+
+
+
+
+
+
+
+
+
   }
 }

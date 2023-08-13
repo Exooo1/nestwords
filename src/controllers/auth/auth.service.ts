@@ -7,7 +7,7 @@ import { resStatus, TStatusRes } from "../../utils/status";
 import { EmailDTO, LoginDTO, SignUpDTO } from "./auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { Model } from "mongoose";
-import { IAuthService, TLoginRes } from "./types";
+import { IAuthService, TLoginRes, TNewPassword } from "./types";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import * as bcrypt from "bcryptjs";
 
@@ -225,8 +225,28 @@ export class AuthService implements IAuthService {
       }, "");
       if (mail.resultCode) {
         this.logger.log(`Changed password - ${mail}`);
-        return resStatus<null>(null, 1, "", "Password was changed.");
+        return resStatus<null>(null, 1, "", "We sent the letter you");
       } else throw new HttpException(mail.error, HttpStatus.FORBIDDEN);
+      return resStatus<null>(null, 1);
+    } catch (err) {
+      const error = err as HttpException;
+      let status: number;
+      if (typeof error.getStatus === "function") status = error.getStatus();
+      if (status) throw new HttpException(error.message, status);
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+  }
+
+  async newPassword(data: TNewPassword): Promise<TStatusRes<null>> {
+    try {
+      const { id, password } = data;
+      const account = await this.authModel.findByIdAndUpdate({ _id: id }, { "password": await bcrypt.hash(password, 11) }) as IAccount;
+      if (!account) throw new HttpException("NotFound account!", HttpStatus.NOT_FOUND);
+      account.save;
       return resStatus<null>(null, 1);
     } catch (err) {
       const error = err as HttpException;

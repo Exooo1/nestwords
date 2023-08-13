@@ -36,5 +36,17 @@ export class EmailDTO extends PickType(SignUpDTO, ["email"]) {
   readonly verify: string;
 }
 
+export class NewPasswordDTO {
+  @MinLength(10)
+  @IsString()
+  @IsNotEmpty()
+  readonly id:string
+
+  @MinLength(8)
+  @IsString()
+  @IsNotEmpty()
+  readonly password:string
+}
+
 export class LoginDTO extends PickType(SignUpDTO, ["email", "password"]) {
 }
