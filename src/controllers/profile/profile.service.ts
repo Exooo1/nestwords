@@ -41,7 +41,11 @@ export class ProfileService implements IProfile {
       const account = await this.authModel.findOne({ _id: user }) as IAccount;
       if (!account) throw new HttpException("Not Found(User)", HttpStatus.NOT_FOUND);
       const verifiedImg = verifyImage.some(el=>avatar.includes(el))
-      if(!verifiedImg) throw new HttpException("The site supports only (png,jpg) files", HttpStatus.FORBIDDEN);
+      if(!verifiedImg) {
+        const avatarPath = path.resolve(__dirname, "../../../", `src/uploads/${avatar}`);
+        await fs.unlink(avatarPath, (err) => this.logger.error(err));
+        throw new HttpException("The site supports only (png,jpg) files", HttpStatus.FORBIDDEN);
+      }
       if (account.profile.avatar) {
         if (account.profile.avatar !== "default.png") {
           const avatarPath = path.resolve(__dirname, "../../../", `src/uploads/${account.profile.avatar}`);
@@ -67,7 +71,8 @@ export class ProfileService implements IProfile {
   async getAvatar(id: string, res: Response): Promise<string> {
     try {
       const filePath = path.resolve(__dirname, "../../../", `src/uploads/${id}`);
-      if (filePath) return filePath;
+      const isFound = fs.existsSync(filePath)
+      if (isFound) return filePath;
       else return path.resolve(__dirname, "../../../", `src/uploads/default.png`);
     } catch (err) {
       const error = err as HttpException;
