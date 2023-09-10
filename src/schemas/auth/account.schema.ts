@@ -113,7 +113,7 @@ export class Profile {
   @Prop(Letters)
   words: Letters;
 
-  @Prop({ type: String, default: "default.png"})
+  @Prop({ type: String, default: "default.png" })
   avatar: string;
 
   @Prop([String])
@@ -121,6 +121,12 @@ export class Profile {
 
   @Prop({ type: Number, default: 0, required: true })
   notes: number;
+
+  @Prop({ type: String, default: "" })
+  status: string;
+
+  @Prop({ type: String, default: "" })
+  emoji: string;
 }
 
 

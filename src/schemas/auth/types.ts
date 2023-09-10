@@ -6,39 +6,41 @@ export type TAccountWord = {
 };
 
 export interface IAccountProfile {
-   readonly firstName: string;
-   readonly lastName: string;
-   totalWords: number;
-   days:Array<string>;
-   notes:number;
-   avatar:string
-   words: {
-     a: TAccountWord[];
-     b: TAccountWord[];
-     c: TAccountWord[];
-     d: TAccountWord[];
-     e: TAccountWord[];
-     f: TAccountWord[];
-     g: TAccountWord[];
-     h: TAccountWord[];
-     i: TAccountWord[];
-     j: TAccountWord[];
-     k: TAccountWord[];
-     l: TAccountWord[];
-     m: TAccountWord[];
-     n: TAccountWord[];
-     o: TAccountWord[];
-     p: TAccountWord[];
-     q: TAccountWord[];
-     r: TAccountWord[];
-     s: TAccountWord[];
-     t: TAccountWord[];
-     u: TAccountWord[];
-     v: TAccountWord[];
-     w: TAccountWord[];
-     x: TAccountWord[];
-     y: TAccountWord[];
-     z: TAccountWord[];
+  readonly firstName: string;
+  readonly lastName: string;
+  totalWords: number;
+  days: Array<string>;
+  notes: number;
+  avatar: string;
+  status?: string;
+  emoji?: string;
+  words: {
+    a: TAccountWord[];
+    b: TAccountWord[];
+    c: TAccountWord[];
+    d: TAccountWord[];
+    e: TAccountWord[];
+    f: TAccountWord[];
+    g: TAccountWord[];
+    h: TAccountWord[];
+    i: TAccountWord[];
+    j: TAccountWord[];
+    k: TAccountWord[];
+    l: TAccountWord[];
+    m: TAccountWord[];
+    n: TAccountWord[];
+    o: TAccountWord[];
+    p: TAccountWord[];
+    q: TAccountWord[];
+    r: TAccountWord[];
+    s: TAccountWord[];
+    t: TAccountWord[];
+    u: TAccountWord[];
+    v: TAccountWord[];
+    w: TAccountWord[];
+    x: TAccountWord[];
+    y: TAccountWord[];
+    z: TAccountWord[];
   };
 }
 

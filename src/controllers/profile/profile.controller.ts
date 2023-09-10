@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/auth.guard";
 import { ProfileService } from "./profile.service";
 import { TStatusRes } from "../../utils/status";
-import { TProfileInfo } from "./types";
+import { TNewStatus, TProfileInfo } from "./types";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import * as path from "path";
 import { Token } from "../../decorators/token.decorator";
+import { SetStatusDTO } from "./profile.dto";
 
 @Controller("profile")
 export class ProfileController {
@@ -36,5 +36,11 @@ export class ProfileController {
   @Get("get-avatar/:id")
   async getAvatar(@Req() req, @Res() res): Promise<string> {
     return res.sendFile(await this.profileService.getAvatar(req.params.id, res));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("set-status")
+  setAvatar(@Token("id") id: string, @Body() data: SetStatusDTO): Promise<TStatusRes<number>> {
+    return this.profileService.setStatus(id, data);
   }
 }

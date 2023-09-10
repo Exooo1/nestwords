@@ -21,6 +21,7 @@ export class TestController {
   //   return this.testService.getCheck();
   // }
 
+  @Auth('admin','simple-user','picker','cashier')
   @UseGuards(TestGuard)
   @Roles('admin','simple-user','picker','cashier')
   @Get("check/:role")
