@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors, Param } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/guards/auth.guard";
 import { ProfileService } from "./profile.service";
 import { TStatusRes } from "../../utils/status";
@@ -34,8 +34,8 @@ export class ProfileController {
   }
 
   @Get("get-avatar/:id")
-  async getAvatar(@Req() req, @Res() res): Promise<string> {
-    return res.sendFile(await this.profileService.getAvatar(req.params.id, res));
+  async getAvatar(@Param('id') id, @Res() res): Promise<string> {
+    return res.sendFile(await this.profileService.getAvatar(id, res));
   }
 
   @UseGuards(JwtAuthGuard)

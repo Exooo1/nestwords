@@ -46,16 +46,5 @@ export class AuthController implements IAuthController {
   @Post("new-password")
   newPassword(@Body() data:NewPasswordDTO): Promise<TStatusRes<null>> {
     return this.authService.newPassword(data);
-
-
-
-
-
-
-
-
-
-
-
   }
 }
