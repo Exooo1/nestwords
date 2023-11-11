@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from './exception/custom.exception';
 import { CustomLogger } from './logger/logger';
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { PORT } from "./utils/path";
+const result = require('./controllers/words/words.service')
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {

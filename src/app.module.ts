@@ -9,6 +9,7 @@ import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { WordsModule } from "./controllers/words/words.module";
 import { ProfileModule } from "./controllers/profile/profile.module";
 import { TestModule } from "./test/test.module";
+import { RepeatModule } from './controllers/repeat/repeat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TestModule } from "./test/test.module";
         uri: config.get<string>('DB_URL_MONGO'),
       }),
     }),
+    RepeatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
